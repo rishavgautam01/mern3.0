@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const blogSchema = new mongoose.Schema({
+const blogSchema = new Schema({
     title:{
         type:String,
         unique:true
@@ -9,7 +10,7 @@ const blogSchema = new mongoose.Schema({
         type:String
     },
     description:{
-        type:Text
+        type:String
     },
     image:{
         type:String
