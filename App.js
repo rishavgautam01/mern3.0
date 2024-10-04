@@ -3,7 +3,11 @@ require('dotenv').config()
 const app = express()
 const mongoose = require('mongoose')
 const connect = require('./database/index')
-connect()
+
+
+connect() //connecting to the database
+
+
 app.get("/",(req,res)=>{
     res.status(200).json({
         message:"This is a home page"
