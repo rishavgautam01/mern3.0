@@ -1,4 +1,5 @@
 const express = require('express')
+require('dotenv').config()
 const app = express()
 const mongoose = require('mongoose')
 const connect = require('./database/index')
@@ -9,8 +10,8 @@ app.get("/",(req,res)=>{
     })
 })
 
-app.listen(3000,()=>{
-    console.log("App is running at port 3000")
+app.listen(process.env.PORT,()=>{
+    console.log("App is running at port:",process.env.PORT)
 })
 
 // mongodb+srv://rishavgautam909:<db_password>@mern3.c0ejv.mongodb.net/?retryWrites=true&w=majority&appName=mern3
