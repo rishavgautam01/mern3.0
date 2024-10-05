@@ -14,19 +14,22 @@ app.get("/",(req,res)=>{
         message:"This is a home page"
     })
 })
+//const title = req.body.title //const subtitle = req.body.subtitle
 app.post('/blog',async(req,res)=>{
     const {title,subtitle,description,image} = req.body
     console.log(req.body)
     await Blog.create({
-        title,
-        subtitle,
-        description,
-        image
+        title:title,
+        subtitle:subtitle,
+        description:description,
+        image:image
     })
     res.status(200).json({
         message:"Blog added successfully"
     })
 })
+
+
 
 app.listen(process.env.PORT,()=>{
     console.log("App is running at port:",process.env.PORT)
