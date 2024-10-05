@@ -4,8 +4,9 @@ const app = express()
 const mongoose = require('mongoose')
 const connect = require('./database/index')
 const Blog = require('./model/blogModel')
+const {multer,storage} = require('./middleware/multerConfig')
 app.use(express.json())
-
+const upload = multer({storage:storage})
 connect() //connecting to the database
 
 
@@ -15,18 +16,17 @@ app.get("/",(req,res)=>{
     })
 })
 //const title = req.body.title //const subtitle = req.body.subtitle
-app.post('/blog',async(req,res)=>{
+app.post('/blog',upload.single('image'),async(req,res)=>{
     const {title,subtitle,description,image} = req.body
-    if(!title || !subtitle || !description || !image){
+    if(!title || !subtitle || !description){
         return res.status(400).json({
-            message:"Please enter title,subtitle,description and message properly."
+            message:"Please enter title,subtitle,description."
         })
     }
     await Blog.create({
         title:title,
         subtitle:subtitle,
-        description:description,
-        image:image
+        description:description
     })
     res.status(200).json({
         message:"Blog added successfully"
