@@ -17,7 +17,11 @@ app.get("/",(req,res)=>{
 //const title = req.body.title //const subtitle = req.body.subtitle
 app.post('/blog',async(req,res)=>{
     const {title,subtitle,description,image} = req.body
-    console.log(req.body)
+    if(!title || !subtitle || !description || !image){
+        return res.status(400).json({
+            message:"Please enter title,subtitle,description and message properly."
+        })
+    }
     await Blog.create({
         title:title,
         subtitle:subtitle,
