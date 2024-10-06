@@ -11,6 +11,7 @@ const {multer,storage} = require('./middleware/multerConfig')
 app.use(express.json())
 app.use(express.static('storage'))
 const upload = multer({storage:storage})
+const fs = require('fs')
 connect() //connecting to the database
 
 
@@ -69,12 +70,52 @@ app.get('/blog/:id',async(req,res)=>{
 
 app.delete('/blog/:id',async(req,res)=>{
     const {id} = req.params
+    const blog = await Blog.findById(id)
+    const imageName = blog.image
     await Blog.findByIdAndDelete(id)
+    fs.unlink(`./storage/${imageName}`,(err,succ)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log("File deleted successfully")
+        }
+
+    })
     res.status(200).json({
         message:"Deleted successfully."
     })
 })
 
+app.patch('/blog/:id',upload.single('image'),async(req,res)=>{
+    const {id} = req.params
+    const {title,subtitle,description} = req.body
+    const blog = await Blog.findById(id)
+    const fileName = blog.image
+    let image;
+    if(req.file){
+        fs.unlink('./storage/'+fileName,(err,succ)=>{
+            if(err){
+                console.log(err)
+            }
+            else{
+                console.log("Deleted old file.")
+            }
+        
+        })
+        image = req.file.filename
+        
+    }
+    await Blog.findByIdAndUpdate(id,{
+        title,
+        subtitle,
+        description,
+        image
+        
+    })
+    res.status(200).json({
+        message:"Updated successfully."
+    })
+})
 
 
 app.listen(process.env.PORT,()=>{
