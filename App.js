@@ -1,3 +1,6 @@
+//We are following restful api convention
+
+
 const express = require('express')
 require('dotenv').config()
 const app = express()
@@ -39,6 +42,11 @@ app.post('/blog',upload.single('image'),async(req,res)=>{
 
 app.get('/blog',async(req,res)=>{
     const blogs = await Blog.find()   //returns array
+    if(blogs.length === 0){
+        return res.status(400).json({
+            message:"No data found"
+        })
+    }
     res.status(200).json({
         message:"Successfully fetched data",
         data:blogs
@@ -48,9 +56,22 @@ app.get('/blog',async(req,res)=>{
 app.get('/blog/:id',async(req,res)=>{
     const{id} = req.params
     const blog = await Blog.findById(id)
+    if(!blog){
+        return res.status(400).json({
+            message:"No data found"
+        })
+    }
     res.status(200).json({
         message : "Blog fetched",
         data: blog
+    })
+})
+
+app.delete('/blog/:id',async(req,res)=>{
+    const {id} = req.params
+    await Blog.findByIdAndDelete(id)
+    res.status(200).json({
+        message:"Deleted successfully."
     })
 })
 
