@@ -6,6 +6,7 @@ const connect = require('./database/index')
 const Blog = require('./model/blogModel')
 const {multer,storage} = require('./middleware/multerConfig')
 app.use(express.json())
+app.use(express.static('storage'))
 const upload = multer({storage:storage})
 connect() //connecting to the database
 
@@ -17,7 +18,9 @@ app.get("/",(req,res)=>{
 })
 //const title = req.body.title //const subtitle = req.body.subtitle
 app.post('/blog',upload.single('image'),async(req,res)=>{
-    const {title,subtitle,description,image} = req.body
+    const {title,subtitle,description} = req.body
+    console.log(req.file)
+    const {filename} = req.file
     if(!title || !subtitle || !description){
         return res.status(400).json({
             message:"Please enter title,subtitle,description."
@@ -26,12 +29,24 @@ app.post('/blog',upload.single('image'),async(req,res)=>{
     await Blog.create({
         title:title,
         subtitle:subtitle,
-        description:description
+        description:description,
+        image:filename
     })
     res.status(200).json({
         message:"Blog added successfully"
     })
 })
+
+app.get('/blog',async(req,res)=>{
+    const blogs = await Blog.find()   //returns array
+    res.status(200).json({
+        message:"Successfully fetched data",
+        data:blogs
+    })
+})
+
+
+
 
 
 
